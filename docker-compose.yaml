@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  grpc-app-server:
+    build:
+      dockerfile: dev.Dockerfile
+      context: .
+    networks:
+      - grpc-app-network
+    ports:
+      - "8081:8081"
+      - "50051:50051"
+    expose:
+      - "8081"
+      - "50051"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+
+networks:
+  grpc-app-network:
+    driver: bridge

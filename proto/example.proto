@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package example;
+
+option go_package = "github.com/ankorstore/yokai-grpc-template/proto";
+
+message ExampleRequest {
+  string text = 1;
+}
+
+message ExampleResponse {
+  string text = 1;
+}
+
+service ExampleService {
+  // Example unary rpc
+  rpc ExampleUnary(ExampleRequest) returns (ExampleResponse) {};
+  // Example bidi streaming rpc
+  rpc ExampleStreaming(stream ExampleRequest) returns (stream ExampleResponse) {};
+}
