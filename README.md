@@ -50,7 +50,7 @@ make up      # start the docker compose stack
 make down    # stop the docker compose stack
 make logs    # stream the docker compose stack logs
 make fresh   # refresh the docker compose stack
-make stubs   # generate gRPC stubs with protoc, for example: make stubs from=proto/example.proto
+make stubs   # generate gRPC stubs with protoc (ex: make stubs from=proto/example.proto)
 make test    # run tests
 make lint    # run linter
 ```
