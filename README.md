@@ -91,4 +91,24 @@ Once ready, the application will be available on:
 
 If you update the [proto definition](proto/example.proto), you can run `make stubs from=proto/example.proto` to regenerate the stubs.
 
+Usage examples with [gRPCurl](https://github.com/fullstorydev/grpcurl):
+
+- with `ExampleService/ExampleUnary`:
+
+```shell
+grpcurl -plaintext -d '{"text":"hello"}' localhost:50051 example.ExampleService/ExampleUnary
+{
+  "text": "response from grpc-app: you sent hello"
+}
+```
+
+- with `ExampleService/ExampleStreaming`:
+
+```shell
+grpcurl -plaintext -d '{"text":"hello"}' localhost:50051 example.ExampleService/ExampleStreaming
+{
+  "text": "response from grpc-app: you sent hello"
+}
+```
+
 You can use any gRPC clients, for example [Postman](https://learning.postman.com/docs/sending-requests/grpc/grpc-request-interface/) or [Evans](https://github.com/ktr0731/evans).
