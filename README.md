@@ -105,7 +105,7 @@ grpcurl -plaintext -d '{"text":"hello"}' localhost:50051 example.ExampleService/
 - with `ExampleService/ExampleStreaming`:
 
 ```shell
-grpcurl -plaintext -d '@' localhost:50051 example.ExampleService/ExampleStreaming<<EOF
+grpcurl -plaintext -d '@' localhost:50051 example.ExampleService/ExampleStreaming <<EOF
 {"text":"hello"}
 {"text":"world"}
 EOF
