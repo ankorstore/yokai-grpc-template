@@ -6,29 +6,54 @@
 > gRPC application template based on the [Yokai](https://github.com/ankorstore/yokai) Go framework.
 
 <!-- TOC -->
-* [Overview](#overview)
 * [Documentation](#documentation)
+* [Overview](#overview)
+  * [Layout](#layout)
+  * [Makefile](#makefile)
 * [Getting started](#getting-started)
   * [Installation](#installation)
     * [With GitHub](#with-github)
     * [With gonew](#with-gonew)
   * [Usage](#usage)
-* [Contents](#contents)
-  * [Layout](#layout)
-  * [Makefile](#makefile)
 <!-- TOC -->
+
+## Documentation
+
+For more information about the [Yokai](https://github.com/ankorstore/yokai) framework, you can check its [documentation](https://ankorstore.github.io/yokai).
 
 ## Overview
 
 This template provides:
 
-- a ready to extend [Yokai](https://github.com/ankorstore/yokai) application, with the [fxgrpcserver](https://github.com/ankorstore/yokai/tree/main/fxgrpcserver) module installed
+- a ready to extend [Yokai](https://github.com/ankorstore/yokai) application, with the [gRPC server](https://ankorstore.github.io/yokai/modules/fxgrpcserver/) module installed
 - a ready to use [dev environment](docker-compose.yaml), based on [Air](https://github.com/cosmtrek/air) (for live reloading)
 - some examples of [service](internal/service/example.go) and [test](internal/service/example_test.go) to get started
 
-## Documentation
+### Layout
 
-See [Yokai documentation](https://ankorstore.github.io/yokai).
+This template is following the [recommended project layout](https://go.dev/doc/modules/layout):
+
+- `cmd/`: entry points
+- `configs/`: configuration files
+- `internal/`:
+  - `service/`: gRPC service and test examples
+  - `bootstrap.go`: bootstrap
+  - `register.go`: dependencies registration
+- `proto/`: protobuf definition and stubs
+
+### Makefile
+
+This template provides a [Makefile](Makefile):
+
+```
+make up      # start the docker compose stack
+make down    # stop the docker compose stack
+make logs    # stream the docker compose stack logs
+make fresh   # refresh the docker compose stack
+make stubs   # generate gRPC stubs with protoc, for example: make stubs from=proto/example.proto
+make test    # run tests
+make lint    # run linter
+```
 
 ## Getting started
 
@@ -59,37 +84,10 @@ make fresh
 ### Usage
 
 Once ready, the application will be available on:
+
 - `localhost:50051` for the application gRPC server
 - [http://localhost:8081](http://localhost:8081) for the application core dashboard
 
-If you update the [proto definition](proto/example.proto), you can run `make stubs` to regenerate the stubs.
+If you update the [proto definition](proto/example.proto), you can run `make stubs from=proto/example.proto` to regenerate the stubs.
 
 You can use any gRPC clients, for example [Postman](https://learning.postman.com/docs/sending-requests/grpc/grpc-request-interface/) or [Evans](https://github.com/ktr0731/evans).
-
-## Contents
-
-### Layout
-
-This template is following the [standard Go project layout](https://github.com/golang-standards/project-layout):
-
-- `cmd/`: entry points
-- `configs/`: configuration files
-- `internal/`:
-  - `service/`: gRPC service and test examples
-  - `bootstrap.go`: bootstrap (modules, lifecycles, etc)
-  - `services.go`: dependency injection
-- `proto/`: protobuf definition and stubs
-
-### Makefile
-
-This template provides a [Makefile](Makefile):
-
-```
-make up     # start the docker compose stack
-make down   # stop the docker compose stack
-make logs   # stream the docker compose stack logs
-make fresh  # refresh the docker compose stack
-make stubs  # generate gRPC stubs with protoc
-make test   # run tests
-make lint   # run linter
-```
