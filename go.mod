@@ -6,6 +6,7 @@ require (
 	github.com/ankorstore/yokai/config v1.5.0
 	github.com/ankorstore/yokai/fxcore v1.9.0
 	github.com/ankorstore/yokai/fxgrpcserver v1.3.0
+	github.com/ankorstore/yokai/grpcserver v1.2.0
 	github.com/ankorstore/yokai/log v1.2.0
 	github.com/ankorstore/yokai/trace v1.3.0
 	github.com/spf13/cobra v1.8.1
@@ -23,7 +24,6 @@ require (
 	github.com/ankorstore/yokai/fxmetrics v1.2.0 // indirect
 	github.com/ankorstore/yokai/fxtrace v1.2.0 // indirect
 	github.com/ankorstore/yokai/generate v1.2.0 // indirect
-	github.com/ankorstore/yokai/grpcserver v1.2.0 // indirect
 	github.com/ankorstore/yokai/healthcheck v1.1.0 // indirect
 	github.com/ankorstore/yokai/httpserver v1.5.0 // indirect
 	github.com/arl/statsviz v0.6.0 // indirect
