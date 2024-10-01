@@ -4,37 +4,38 @@ import (
 	"context"
 	"errors"
 	"io"
-	"net"
 	"testing"
 
 	"github.com/ankorstore/yokai-grpc-template/internal"
 	"github.com/ankorstore/yokai-grpc-template/proto"
+	"github.com/ankorstore/yokai/grpcserver/grpcservertest"
 	"github.com/ankorstore/yokai/log/logtest"
 	"github.com/ankorstore/yokai/trace/tracetest"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/test/bufconn"
 )
 
 func TestExampleUnary(t *testing.T) {
-	var grpcServer *grpc.Server
-	var lis *bufconn.Listener
+	var connFactory grpcservertest.TestBufconnConnectionFactory
 	var logBuffer logtest.TestLogBuffer
 	var traceExporter tracetest.TestTraceExporter
 
-	internal.RunTest(t, fx.Populate(&grpcServer, &lis, &logBuffer, &traceExporter))
+	internal.RunTest(t, fx.Populate(&connFactory, &logBuffer, &traceExporter))
+
+	// conn preparation
+	conn, err := connFactory.Create(
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	assert.NoError(t, err)
 
 	defer func() {
-		err := lis.Close()
+		err = conn.Close()
 		assert.NoError(t, err)
-
-		grpcServer.GracefulStop()
 	}()
 
 	// client preparation
-	conn, err := prepareGrpcClientTestConnection(lis)
 	assert.NoError(t, err)
 
 	client := proto.NewExampleServiceClient(conn)
@@ -58,23 +59,25 @@ func TestExampleUnary(t *testing.T) {
 	tracetest.AssertHasTraceSpan(t, traceExporter, "ExampleUnary")
 }
 
-func TestTransformAndSplitText(t *testing.T) {
-	var grpcServer *grpc.Server
-	var lis *bufconn.Listener
+func TestExampleStreaming(t *testing.T) {
+	var connFactory grpcservertest.TestBufconnConnectionFactory
 	var logBuffer logtest.TestLogBuffer
 	var traceExporter tracetest.TestTraceExporter
 
-	internal.RunTest(t, fx.Populate(&grpcServer, &lis, &logBuffer, &traceExporter))
+	internal.RunTest(t, fx.Populate(&connFactory, &logBuffer, &traceExporter))
+
+	// conn preparation
+	conn, err := connFactory.Create(
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	assert.NoError(t, err)
 
 	defer func() {
-		err := lis.Close()
+		err = conn.Close()
 		assert.NoError(t, err)
-
-		grpcServer.GracefulStop()
 	}()
 
 	// client preparation
-	conn, err := prepareGrpcClientTestConnection(lis)
 	assert.NoError(t, err)
 
 	client := proto.NewExampleServiceClient(conn)
@@ -153,15 +156,4 @@ func TestTransformAndSplitText(t *testing.T) {
 	assert.Equal(t, "received: is", span.Events[1].Name)
 	assert.Equal(t, "received: a", span.Events[2].Name)
 	assert.Equal(t, "received: test", span.Events[3].Name)
-}
-
-func prepareGrpcClientTestConnection(lis *bufconn.Listener) (*grpc.ClientConn, error) {
-	return grpc.DialContext(
-		context.Background(),
-		"",
-		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
-			return lis.Dial()
-		}),
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	)
 }
