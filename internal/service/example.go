@@ -47,30 +47,37 @@ func (s *ExampleService) ExampleStreaming(stream proto.ExampleService_ExampleStr
 	logger := log.CtxLogger(ctx)
 
 	for {
-		req, err := stream.Recv()
+		select {
+		case <-ctx.Done():
+			logger.Info().Msg("rpc context cancelled")
 
-		if errors.Is(err, io.EOF) {
-			logger.Info().Msg("end of rpc")
+			return ctx.Err()
+		default:
+			req, err := stream.Recv()
 
-			return nil
-		}
+			if errors.Is(err, io.EOF) {
+				logger.Info().Msg("end of rpc")
 
-		if err != nil {
-			logger.Error().Err(err).Msgf("error while receiving: %v", err)
-		}
+				return nil
+			}
 
-		logger.Info().Msgf("received: %s", req.Text)
+			if err != nil {
+				logger.Error().Err(err).Msgf("error while receiving: %v", err)
+			}
 
-		span.AddEvent(fmt.Sprintf("received: %s", req.Text))
+			logger.Info().Msgf("received: %s", req.Text)
 
-		err = stream.Send(&proto.ExampleResponse{
-			Text: fmt.Sprintf("response from %s: you sent %s", s.config.AppName(), req.Text),
-		})
+			span.AddEvent(fmt.Sprintf("received: %s", req.Text))
 
-		if err != nil {
-			logger.Error().Err(err).Msgf("error while sending: %v", err)
+			err = stream.Send(&proto.ExampleResponse{
+				Text: fmt.Sprintf("response from %s: you sent %s", s.config.AppName(), req.Text),
+			})
 
-			return err
+			if err != nil {
+				logger.Error().Err(err).Msgf("error while sending: %v", err)
+
+				return err
+			}
 		}
 	}
 }

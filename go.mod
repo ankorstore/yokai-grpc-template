@@ -4,6 +4,7 @@ go 1.23
 
 require (
 	github.com/ankorstore/yokai/config v1.5.0
+	github.com/ankorstore/yokai/fxconfig v1.3.0
 	github.com/ankorstore/yokai/fxcore v1.9.0
 	github.com/ankorstore/yokai/fxgrpcserver v1.3.0
 	github.com/ankorstore/yokai/grpcserver v1.2.0
@@ -17,7 +18,6 @@ require (
 )
 
 require (
-	github.com/ankorstore/yokai/fxconfig v1.3.0 // indirect
 	github.com/ankorstore/yokai/fxgenerate v1.2.0 // indirect
 	github.com/ankorstore/yokai/fxhealthcheck v1.1.0 // indirect
 	github.com/ankorstore/yokai/fxlog v1.1.0 // indirect
